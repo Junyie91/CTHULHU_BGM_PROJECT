@@ -1,0 +1,419 @@
+@import url("https://fontsapi.zeoseven.com/411/main/result.css");
+
+@font-face {
+  font-family: "ZSFT-by";
+  src: url("https://fontsapi.zeoseven.com/by/main.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #080604;
+  --btn-light:   #f5eed8;
+  --border:      #737373;
+  --gold:        #735425;
+  --gold-dim:    #8a5810;
+  --text-dark:   #1e0c02;
+  --text-dim:    #5a3a15;
+  --btn-shadow:  drop-shadow(2px 3px 4px rgba(0,0,0,0.35));
+  --transition:  0.18s ease;
+}
+
+html, body {
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text-dark);
+  font-family: "KokoroMinchoutai", 'Georgia', 'Palatino Linotype', serif;
+  font-weight: normal;
+  font-size: 15px;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+}
+
+/* ── Layer 0: Page background ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url('../image/background.jfif') center/cover no-repeat;
+  opacity: 0.28;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Layer 1: Tentacle decoration removed from body (moved to UI panels) ── */
+
+/* ── Layer 2: App UI ── */
+.app {
+  position: relative;
+  z-index: 2;
+  width: 900px;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── UI Panel: unified background ── */
+.ui-panel {
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(255, 252, 232, 0.50), rgba(255, 252, 232, 0.50)),
+    url('../image/decorate/edge_zhangyu.png') bottom right / 340px auto no-repeat,
+    url('../image/ui-background.jfif') center/cover no-repeat;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  border-radius: 6px 6px 0 0;
+  padding: 16px 20px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+  position: relative;
+  top: 5px;
+  left: 6px;
+}
+
+.title {
+  font-size: 38px;
+  font-family: "KokoroMinchoutai", 'Georgia', 'Palatino Linotype', serif;
+  font-weight: bold;
+  color: var(--text-dark);
+  letter-spacing: 0.06em;
+}
+
+/* Button shadow wrapper — drop-shadow lives here, outside clip-path */
+.btn-wrap {
+  display: inline-block;
+  filter: var(--btn-shadow);
+  transition: filter var(--transition);
+}
+.btn-wrap:has(.scene-trigger) { display: block; }
+
+/* Mute button — framed, light default / inverted when muted */
+.mute-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--btn-light);
+  border: 18px solid transparent;
+  border-image: url('../image/decorate/button_frame.png') 22% stretch;
+  color: var(--text-dark);
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+  transition: filter var(--transition);
+  clip-path: inset(0 round 6px);
+}
+.mute-btn:hover  { filter: brightness(0.92); }
+.mute-btn.muted  { filter: invert(1) grayscale(1) brightness(4); }
+
+.mute-icon {
+  height: 1em;
+  width: auto;
+  vertical-align: middle;
+  filter: brightness(0);
+  position: relative;
+  top: 1.5px;
+  left: 1.5px;
+}
+
+/* ── BGM Section ── */
+.bgm-section {
+  background: transparent;
+  border-top: 1px solid var(--border);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+/* Scene selector — framed, always light (no active inversion) */
+.scene-selector { position: relative; }
+
+.scene-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--btn-light);
+  border: 18px solid transparent;
+  border-image: url('../image/decorate/button_frame.png') 22% stretch;
+  color: var(--text-dark);
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 20px;
+  font-family: inherit;
+  text-align: left;
+  transition: filter var(--transition);
+  clip-path: inset(0 round 6px);
+}
+.scene-trigger:hover { filter: brightness(0.95); }
+.scene-trigger.open  { filter: brightness(0.92); }
+
+.scene-trigger-icon { color: var(--text-dark); font-size: 16px; }
+.scene-trigger-label { flex: 1; }
+.scene-trigger-arrow {
+  color: var(--text-dark);
+  font-size: 18px;
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+.scene-trigger.open .scene-trigger-arrow { transform: rotate(180deg); }
+
+/* Dropdown */
+.scene-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background:
+    linear-gradient(rgba(245, 238, 216, 0.96), rgba(245, 238, 216, 0.96)),
+    url('../image/ui-background.jfif') center/cover no-repeat;
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  z-index: 100;
+  max-height: 320px;
+  overflow-y: auto;
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.scene-dropdown.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.scene-list { list-style: none; }
+
+.scene-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(115, 115, 115, 0.25);
+  transition: background var(--transition);
+  font-size: 14px;
+  color: var(--text-dark);
+}
+.scene-item:last-child { border-bottom: none; }
+.scene-item:hover  { background: rgba(160, 90, 20, 0.10); }
+.scene-item.active { background: rgba(160, 90, 20, 0.18); color: var(--gold); font-weight: bold; }
+.scene-item .scene-emoji { font-size: 17px; width: 24px; text-align: center; }
+.scene-item .scene-name  { flex: 1; }
+
+/* Volume row */
+.volume-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.volume-label, .volume-icon {
+  font-size: 13px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  min-width: 60px;
+}
+.volume-icon { min-width: auto; font-size: 16px; }
+
+.volume-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+  background: linear-gradient(to right, var(--gold) var(--val, 70%), rgba(115,115,115,0.3) var(--val, 70%));
+}
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--gold);
+  cursor: pointer;
+  transition: transform var(--transition);
+}
+.volume-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.volume-slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: none;
+  cursor: pointer;
+}
+
+.volume-value {
+  font-size: 14px;
+  font-weight: bold;
+  color: #735425;
+  min-width: 36px;
+  text-align: right;
+}
+
+/* ── SFX Section ── */
+.sfx-section {
+  background: transparent;
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+}
+
+.sfx-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--title);
+  letter-spacing: 0.03em;
+}
+
+/* Tabs — framed, light default, inverted when active */
+.sfx-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sfx-tab {
+  background: var(--btn-light);
+  border: 20px solid transparent;
+  border-width: 10px 20px;
+  border-image: url('../image/decorate/button_frame.png') 22% stretch;
+  color: var(--text-dark);
+  padding: 0 16px;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+  transition: filter var(--transition);
+  clip-path: inset(0 round 6px);
+}
+.sfx-tab:hover  { filter: brightness(0.92); }
+.sfx-tab.active { filter: invert(1) grayscale(1) brightness(4); }
+
+/* SFX Grid — framed, 4 per row, light default, inverted on flash */
+.sfx-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sfx-grid .btn-wrap {
+  position: relative;
+  width: calc(31.25% - 10px);
+  min-width: 100px;
+}
+
+.sfx-btn {
+  background: var(--btn-light);
+  position: relative;
+  overflow: hidden;
+  border: 18px solid transparent;
+  border-width: 10px 18px;
+  border-image: url('../image/decorate/button_frame.png') 22% stretch;
+  color: var(--text-dark);
+  padding: 4px 4px;
+  width: 100%;
+  cursor: pointer;
+  font-size: 19px;
+  font-family: inherit;
+  text-align: center;
+  white-space: nowrap;
+  transition: filter var(--transition), transform 0.08s ease;
+  user-select: none;
+  clip-path: inset(0 round 6px);
+}
+.sfx-btn:hover  { filter: brightness(0.92); }
+.sfx-btn:active { transform: scale(0.96); }
+
+/* Progress overlay — grows from left to right */
+.sfx-progress {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 12, 2, 0.40);
+  transform: scaleX(0);
+  transform-origin: left;
+  pointer-events: none;
+  z-index: 1;
+}
+.sfx-name { position: relative; z-index: 2; }
+
+/* Pause & Stop mini buttons */
+.sfx-pause,
+.sfx-stop {
+  display: none;
+  position: absolute;
+  top: -11px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--btn-light);
+  color: var(--text-dark);
+  font-size: 13px;
+  cursor: pointer;
+  z-index: 10;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
+  filter: var(--btn-shadow);
+  transition: filter var(--transition);
+}
+.sfx-pause:hover,
+.sfx-stop:hover { filter: brightness(0.85) var(--btn-shadow); }
+
+.sfx-pause { right: 24px; }
+.sfx-stop  { right: -3px; }
+
+.sfx-pause.visible,
+.sfx-stop.visible { display: flex; }
+
+/* ── Backdrop ── */
+.backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+.backdrop.active { display: block; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: rgba(255,245,225,0.3); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
