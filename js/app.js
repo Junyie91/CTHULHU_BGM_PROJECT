@@ -116,6 +116,7 @@ async function ensureCtx() {
 // BGM state
 let bgmAudio = null;
 let bgmGain = null;
+let bgmNextAudio = null;        // preloaded next track
 let currentSceneData = null;    // full scene object for track cycling
 let currentTrackIndex = 0;
 let currentSceneId = null;
@@ -136,6 +137,14 @@ function fadeBgmGain(targetVal, durationSec) {
 }
 
 // Build audio chain and start playing a single track
+function preloadNext() {
+  if (!currentSceneData || currentSceneData.tracks.length <= 1) return;
+  const tracks = currentSceneData.tracks;
+  const nextIndex = (currentTrackIndex + 1) % tracks.length;
+  bgmNextAudio = new Audio(tracks[nextIndex]);
+  bgmNextAudio.preload = 'auto';
+}
+
 function startTrack(src) {
   if (!ctx) return;
 
@@ -154,7 +163,14 @@ function startTrack(src) {
     setTimeout(() => { oldAudio.pause(); oldAudio.src = ''; }, 1600);
   }
 
-  const audio = new Audio(src);
+  // Reuse preloaded Audio if src matches, otherwise create fresh
+  let audio;
+  if (bgmNextAudio && bgmNextAudio.src.endsWith(src.replace(/^\.\//, ''))) {
+    audio = bgmNextAudio;
+  } else {
+    audio = new Audio(src);
+  }
+  bgmNextAudio = null;
 
   // Single track: built-in loop. Multi-track: timeupdate crossfade + ended fallback.
   if (currentSceneData && currentSceneData.tracks.length === 1) {
@@ -182,8 +198,11 @@ function startTrack(src) {
 
   audio.play().catch(err => console.error('播放失败 (路径: ' + src + '):', err));
 
-  const effectiveVol = isMuted ? 0 : (bgmTargetVolume * (activeSfxCount > 0 ? 0.3 : 1));
+  const effectiveVol = isMuted ? 0 : (bgmTargetVolume * (activeSfxCount > 0 ? 0.15 : 1));
   fadeBgmGain(effectiveVol, 2);
+
+  // Start preloading the next track in background
+  preloadNext();
 }
 
 // When a multi-track scene's current track ends, play the next one
@@ -225,6 +244,7 @@ async function playScene(scene) {
   currentSceneData = scene;
   currentTrackIndex = 0;
   currentSceneId = scene.id;
+  bgmNextAudio = null;
 
   startTrack(scene.tracks[0]);
 }
