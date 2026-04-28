@@ -4,101 +4,73 @@
 
 const scenes = [
   {
-    id: 'arkham-street',
-    name: '阿卡姆街道',
+    id: 'daily-street',
+    name: '日常街道',
     emoji: '🏙️',
     tracks: [
-      'audio/01-arkham-street/track1.mp3',
+      'audio/01-daily-street/track1.mp3',
+      'audio/01-daily-street/track2.mp3',
+      'audio/01-daily-street/track3.mp3',
     ],
   },
   {
-    id: 'miskatonic',
-    name: '米斯卡托尼克大學',
-    emoji: '📚',
+    id: 'indoor-explore',
+    name: '室內探索',
+    emoji: '🕯️',
     tracks: [
-      'audio/02-miskatonic/track1.mp3',
-      'audio/02-miskatonic/track2.mp3',
-      'audio/02-miskatonic/track3.mp3',
+      'audio/02-indoor-explore/track1.mp3',
+      'audio/02-indoor-explore/track2.mp3',
+      'audio/02-indoor-explore/track3.mp3',
     ],
   },
   {
-    id: 'investigation',
-    name: '調查現場',
-    emoji: '🔍',
+    id: 'wilderness',
+    name: '野外荒地',
+    emoji: '🌿',
     tracks: [
-      'audio/03-investigation/track1.mp3',
-      'audio/03-investigation/track2.mp3',
-      'audio/03-investigation/track3.mp3',
+      'audio/03-wilderness/track1.mp3',
+      'audio/03-wilderness/track2.mp3',
+      'audio/03-wilderness/track3.mp3',
     ],
   },
   {
-    id: 'stormy-night',
-    name: '暴風雨之夜',
-    emoji: '🌧️',
+    id: 'peaceful',
+    name: '片刻安寧',
+    emoji: '🌙',
     tracks: [
-      'audio/04-stormy-night/track1.mp3',
-      'audio/04-stormy-night/track2.mp3',
-      'audio/04-stormy-night/track3.mp3',
+      'audio/04-peaceful/track1.mp3',
+      'audio/04-peaceful/track2.mp3',
+      'audio/04-peaceful/track3.mp3',
     ],
   },
   {
-    id: 'manor',
-    name: '廢棄莊園',
-    emoji: '🏚️',
-    tracks: [
-      'audio/05-manor/track1.mp3',
-      'audio/05-manor/track2.mp3',
-      'audio/05-manor/track3.mp3',
-    ],
-  },
-  {
-    id: 'harbor',
-    name: '港口與海',
-    emoji: '⚓',
-    tracks: [
-      'audio/06-harbor/track1.mp3',
-      'audio/06-harbor/track2.mp3',
-      'audio/06-harbor/track3.mp3',
-    ],
-  },
-  {
-    id: 'stealth',
-    name: '潛入/跟蹤',
-    emoji: '👁️',
-    tracks: [
-      'audio/07-stealth/track1.mp3',
-      'audio/07-stealth/track2.mp3',
-      'audio/07-stealth/track3.mp3',
-    ],
-  },
-  {
-    id: 'combat',
-    name: '戰鬥與混亂',
+    id: 'combat-chase',
+    name: '戰鬥追逐',
     emoji: '⚔️',
     tracks: [
-      'audio/08-combat/track1.mp3',
-      'audio/08-combat/track2.mp3',
-      'audio/08-combat/track3.mp3',
+      'audio/05-combat-chase/track1.mp3',
+      'audio/05-combat-chase/track2.mp3',
+      'audio/05-combat-chase/track3.mp3',
     ],
   },
   {
     id: 'dread',
     name: '恐懼逼近',
-    emoji: '😱',
+    emoji: '😰',
     tracks: [
-      'audio/09-dread/track1.mp3',
-      'audio/09-dread/track2.mp3',
-      'audio/09-dread/track3.mp3',
+      'audio/06-dread/track1.mp3',
+      'audio/06-dread/track2.mp3',
+      'audio/06-dread/track3.mp3',
     ],
   },
   {
     id: 'mythos',
-    name: '神話顯現',
+    name: '神秘顯現',
     emoji: '🐙',
     tracks: [
-      'audio/10-mythos/track1.mp3',
-      'audio/10-mythos/track2.mp3',
-      'audio/10-mythos/track3.mp3',
+      'audio/07-mythos/track1.mp3',
+      'audio/07-mythos/track2.mp3',
+      'audio/07-mythos/track3.mp3',
     ],
   },
 ];
@@ -248,7 +220,7 @@ async function playScene(scene) {
 function startDuck() {
   activeSfxCount++;
   if (duckTimer) { clearTimeout(duckTimer); duckTimer = null; }
-  if (!isMuted) fadeBgmGain(bgmTargetVolume * 0.3, 0.3);
+  if (!isMuted) fadeBgmGain(bgmTargetVolume * 0.15, 0.1);
 }
 
 function endDuck() {
@@ -356,7 +328,7 @@ async function playSfx(sfxData, wrap) {
   }
 
   const gain = ctx.createGain();
-  gain.gain.value = isMuted ? 0 : sfxTargetVolume;
+  gain.gain.value = sfxTargetVolume;
   source.connect(gain);
   gain.connect(ctx.destination);
 
@@ -410,9 +382,6 @@ function setMute(muted) {
   if (bgmGain) {
     fadeBgmGain(muted ? 0 : bgmTargetVolume, 0.3);
   }
-  if (sfxState.gain) {
-    sfxState.gain.gain.value = muted ? 0 : sfxTargetVolume;
-  }
 }
 
 function setBgmVolume(val) {
@@ -425,7 +394,7 @@ function setBgmVolume(val) {
 
 function setSfxVolume(val) {
   sfxTargetVolume = val;
-  if (sfxState.gain && !isMuted) {
+  if (sfxState.gain) {
     sfxState.gain.gain.value = val;
   }
 }
