@@ -150,15 +150,17 @@ function startTrack(src) {
       oldGain.gain.linearRampToValueAtTime(0, now + 1.5);
     }
     oldAudio.removeEventListener('ended', onBgmEnded);
+    oldAudio.removeEventListener('timeupdate', onBgmTimeUpdate);
     setTimeout(() => { oldAudio.pause(); oldAudio.src = ''; }, 1600);
   }
 
   const audio = new Audio(src);
 
-  // Single track: built-in loop. Multi-track: ended → next.
+  // Single track: built-in loop. Multi-track: timeupdate crossfade + ended fallback.
   if (currentSceneData && currentSceneData.tracks.length === 1) {
     audio.loop = true;
   } else {
+    audio.addEventListener('timeupdate', onBgmTimeUpdate);
     audio.addEventListener('ended', onBgmEnded);
   }
 
@@ -185,6 +187,16 @@ function startTrack(src) {
 }
 
 // When a multi-track scene's current track ends, play the next one
+function onBgmTimeUpdate() {
+  if (!bgmAudio || !isFinite(bgmAudio.duration)) return;
+  const remaining = bgmAudio.duration - bgmAudio.currentTime;
+  if (bgmAudio.duration > 3 && remaining > 0 && remaining <= 2) {
+    bgmAudio.removeEventListener('timeupdate', onBgmTimeUpdate);
+    bgmAudio.removeEventListener('ended', onBgmEnded);
+    onBgmEnded();
+  }
+}
+
 function onBgmEnded() {
   if (!currentSceneData) return;
   const tracks = currentSceneData.tracks;
