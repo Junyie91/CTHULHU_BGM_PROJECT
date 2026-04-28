@@ -85,7 +85,7 @@ const soundEffects = {
   ],
   indoor: [
     { id: 'door-open',  name: '開門聲',   file: 'audio/sfx/door-open.mp3' },
-    { id: 'door-creak', name: '吱呀門聲', file: 'audio/sfx/door-creak.mp3' },
+    { id: 'door-creak', name: '開鎖', file: 'audio/sfx/lock-open.mp3' },
     { id: 'glass',      name: '玻璃破碎', file: 'audio/sfx/glass-break.mp3' },
     { id: 'book',       name: '翻書聲',   file: 'audio/sfx/book-flip.mp3' },
     { id: 'phone',      name: '老式電話鈴', file: 'audio/sfx/old-phone.mp3' },
