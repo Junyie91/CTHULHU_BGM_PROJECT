@@ -252,7 +252,7 @@ async function playScene(scene) {
 function startDuck() {
   activeSfxCount++;
   if (duckTimer) { clearTimeout(duckTimer); duckTimer = null; }
-  if (!isMuted) fadeBgmGain(bgmTargetVolume * 0.15, 0.1);
+  if (!isMuted) fadeBgmGain(bgmTargetVolume * 0.4, 0.1);
 }
 
 function endDuck() {
