@@ -117,6 +117,7 @@ async function ensureCtx() {
 let bgmAudio = null;
 let bgmGain = null;
 let bgmNextAudio = null;        // preloaded next track
+let bgmNextTrackIndex = null;   // pre-decided next random index
 let currentSceneData = null;    // full scene object for track cycling
 let currentTrackIndex = 0;
 let currentSceneId = null;
@@ -137,11 +138,18 @@ function fadeBgmGain(targetVal, durationSec) {
 }
 
 // Build audio chain and start playing a single track
+function pickRandomIndex(excludeIndex) {
+  const tracks = currentSceneData.tracks;
+  if (tracks.length === 1) return 0;
+  let next;
+  do { next = Math.floor(Math.random() * tracks.length); } while (next === excludeIndex);
+  return next;
+}
+
 function preloadNext() {
   if (!currentSceneData || currentSceneData.tracks.length <= 1) return;
-  const tracks = currentSceneData.tracks;
-  const nextIndex = (currentTrackIndex + 1) % tracks.length;
-  bgmNextAudio = new Audio(tracks[nextIndex]);
+  bgmNextTrackIndex = pickRandomIndex(currentTrackIndex);
+  bgmNextAudio = new Audio(currentSceneData.tracks[bgmNextTrackIndex]);
   bgmNextAudio.preload = 'auto';
 }
 
@@ -229,7 +237,8 @@ function onBgmEnded() {
     return;
   }
 
-  currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+  currentTrackIndex = bgmNextTrackIndex ?? pickRandomIndex(currentTrackIndex);
+  bgmNextTrackIndex = null;
   startTrack(tracks[currentTrackIndex]);
 }
 
@@ -242,17 +251,18 @@ async function playScene(scene) {
   }
 
   currentSceneData = scene;
-  currentTrackIndex = 0;
+  currentTrackIndex = Math.floor(Math.random() * scene.tracks.length);
   currentSceneId = scene.id;
   bgmNextAudio = null;
+  bgmNextTrackIndex = null;
 
-  startTrack(scene.tracks[0]);
+  startTrack(scene.tracks[currentTrackIndex]);
 }
 
 function startDuck() {
   activeSfxCount++;
   if (duckTimer) { clearTimeout(duckTimer); duckTimer = null; }
-  if (!isMuted) fadeBgmGain(bgmTargetVolume * 0.4, 0.1);
+  if (!isMuted) fadeBgmGain(bgmTargetVolume * 0.5, 0.1);
 }
 
 function endDuck() {
